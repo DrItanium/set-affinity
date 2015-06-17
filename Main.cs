@@ -33,7 +33,6 @@ namespace SetAffinity
 		return false;
 	    } else {
 		int index = args.IndexOf("--");
-		programArguments.Clear();
 		subprogramArguments.Clear();
 		// divide up the number of arguments between sub and this program
 		subprogramArguments.AddRange(args.Skip(args.IndexOf("--") + 1));
@@ -42,34 +41,33 @@ namespace SetAffinity
 	}
 	private static bool ParseProgramArguments(IEnumerable<string> args)
 	{
-	    if (args.Length() == 0) {
+	    if (args.Count() == 0) {
 		Console.WriteLine("No affinity mask provided!");
 		return false;
-	    } else if (args.Length() > 1) {
+	    } else if (args.Count() > 1) {
 		Console.WriteLine("Too many arguments provided! Affinity mask only");
 		return false;
 	    } else {
-		if (!int.TryParse(args.First(), affinity)) {
+		if (!int.TryParse(args.First(), out affinity)) {
 		    Console.WriteLine("Couldn't parse affinity mask!");
 		    return false;
 		} else {
 		    return true;
 		}
+	    }
 	}
-    }
-    public static class Main
-    {
-	public static void main(string[] args)
+	public static class Program
 	{
-	    if (!Args.Parse(args)) {
-		return;
-	    }
-	    foreach (var v in Args.ProgramArguments) {
-		Console.WriteLine(v);
-	    }
-	    Console.WriteLine("--");
-	    foreach (var v in Args.SubprogramArguments) {
-		Console.WriteLine(v);
+	    public static void Main(string[] args)
+	    {
+		if (!Args.Parse(args)) {
+		    return;
+		}
+		Console.WriteLine("Affinity mask: {0}", Args.Affinity);
+		Console.WriteLine("--");
+		foreach (var v in Args.SubprogramArguments) {
+		    Console.WriteLine(v);
+		}
 	    }
 	}
     }
